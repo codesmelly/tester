@@ -62,17 +62,19 @@
         return false;
     }());
 
-    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        container.className = "unity-mobile";
-        //config.devicePixelRatio = 1;
-    }
-    loadingCover.style.display = "";
-
     let player;
     let leaderboard;
     let myGameInstance = null;
     let payments = null;
     let promptCanShow = false;
+    let mobile = false;    
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        mobile = true;
+        //config.devicePixelRatio = 1;
+    }
+    loadingCover.style.display = "";
 
     const script = document.createElement("script");
     script.src = loaderUrl;
@@ -114,12 +116,19 @@
       console.log(type);
 
       switch(type) {
+
         case 'VKWebAppViewHide':
           myGameInstance.SendMessage('VkBridge', 'WindowFocus', 'false');
           break;
+
         case 'VKWebAppViewRestore': 
           myGameInstance.SendMessage('VkBridge', 'WindowFocus', 'true');
           break;
+
+        case 'VKWebAppBannerAdClosedByUser':
+          myGameInstance.SendMessage('VkBridge', 'BannerClosedByUser', 'true');
+          break;
+
         }
     }
 
@@ -183,6 +192,22 @@
             console.log(error);            
         });
     }      
+
+    function showBanner(location) {
+        const bridge = vkBridge.default;
+        bridge.send('VKWebAppShowBannerAd', {
+            banner_location: location
+        })
+            .then((data) => {
+                if (data.result) {
+                    
+                }
+            })
+            .catch((error) => {
+                // Ошибка
+                console.log(error);
+            });
+    }
 
     function sendPost(text){
         const bridge = vkBridge.default;
@@ -294,8 +319,16 @@
         .catch(error => {
             myGameInstance.SendMessage('VkBridge', 'SendResult', JSON.stringify(error));
         });;
-      }  
+    }
 
+    function CheckMobile() {
+        if (mobile) {
+            myGameInstance.SendMessage('VkBridge', 'CheckMobileResult', 'true');
+        }
+        else {
+            myGameInstance.SendMessage('VkBridge', 'CheckMobileResult', 'false');
+        }
+    }
     
 </script>
 </body>
