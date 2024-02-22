@@ -114,19 +114,12 @@
       console.log(type);
 
       switch(type) {
-
         case 'VKWebAppViewHide':
           myGameInstance.SendMessage('VkBridge', 'WindowFocus', 'false');
           break;
-
         case 'VKWebAppViewRestore': 
           myGameInstance.SendMessage('VkBridge', 'WindowFocus', 'true');
           break;
-
-        case 'VKWebAppBannerAdClosedByUser':
-          myGameInstance.SendMessage('VkBridge', 'BannerClosedByUser', 'true');
-          break;
-
         }
     }
 
@@ -190,22 +183,6 @@
             console.log(error);            
         });
     }      
-
-    function showBanner(location) {
-        const bridge = vkBridge.default;
-        bridge.send('VKWebAppShowBannerAd', {
-            banner_location: location
-        })
-            .then((data) => {
-                if (data.result) {
-                    
-                }
-            })
-            .catch((error) => {
-                // Ошибка
-                console.log(error);
-            });
-    }
 
     function sendPost(text){
         const bridge = vkBridge.default;
